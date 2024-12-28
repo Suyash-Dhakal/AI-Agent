@@ -14,6 +14,10 @@ app.use((error,req,res,next)=>{
       });
 });
 
+// const res=await getResponse({role:'user',content:'user name is suyash'},"what is my name");
+// console.log(res);
+
+
 app.listen(PORT,()=>{
     console.log(`Server is running on PORT: ${PORT}`);
 })

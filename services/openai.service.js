@@ -1,7 +1,8 @@
+import 'dotenv/config';
 const apiKey=process.env.OPENAI_API_KEY;
 const apiUrl=process.env.OPENAI_ENDPOINT;
 
-export default async function getResponse(prompt){
+export default async function getResponse(history,message){
     try {
         
         const response=await fetch(apiUrl,{
@@ -13,26 +14,23 @@ export default async function getResponse(prompt){
             body:JSON.stringify({
                 model:"gpt-3.5-turbo",
                 messages:[
-                    {
-                        role:'user',
-                        content:prompt
-                    }
+                    ...history,message
                 ]
             }),
         });
-
         let res;
         if (response.ok) {
            const jsonResponse=await response.json();
-           res=jsonResponse?.choices[0]?.message.content;
-           console.log(res);
+           res=jsonResponse?.choices[0]?.message;
            return res;
+        
+        // return response?.choices[0]?.message;
         }
 
     } catch (error) {
         console.log(error);
-        next(error);
+        throw error;
     }
 }
 
- 
+
