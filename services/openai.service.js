@@ -4,7 +4,6 @@ const apiUrl=process.env.OPENAI_ENDPOINT;
 
 export default async function getResponse(history,message){
     try {
-        
         const response=await fetch(apiUrl,{
             method:'POST',
             headers:{
