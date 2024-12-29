@@ -25,11 +25,13 @@ const chat = () => {
             }
 
             const userMessage = formatMessage(userInput);
-            const response = await getResponse(history, userMessage);
+            const response = await getResponse(history, userMessage)
+            
 
             // Add user message and AI response to history
             history.push(userMessage);
             history.push(response);
+            // history.push(userMessage, response);
 
             // Print the AI response
             console.log(`\nAI: ${response.content}\n`);

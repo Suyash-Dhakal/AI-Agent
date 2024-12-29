@@ -4,6 +4,7 @@ const apiUrl=process.env.OPENAI_ENDPOINT;
 
 export default async function getResponse(history,message){
     try {
+        
         const response=await fetch(apiUrl,{
             method:'POST',
             headers:{
@@ -11,7 +12,7 @@ export default async function getResponse(history,message){
                 'api-key':apiKey
             },
             body:JSON.stringify({
-                model:"gpt-3.5-turbo",
+                model:"gpt-4-32k",
                 messages:[
                     ...history,message
                 ]
