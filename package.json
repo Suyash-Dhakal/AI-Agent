@@ -3,9 +3,11 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "langchain": "^0.3.8",
     "node": "^23.5.0",
     "nodemon": "^3.1.9",
-    "openai": "^4.77.0"
+    "openai": "^4.77.0",
+    "pdf-parse": "^1.1.1"
   },
   "scripts": {
     "start": "nodemon controllers/chat.controller.js"
