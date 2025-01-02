@@ -6,10 +6,6 @@ import { AzureOpenAIEmbeddings } from '@langchain/openai'; // Import AzureOpenAI
 
 const question = process.argv[2] || 'hi';
 
-// Your custom model endpoint and API key for Azure
-const embeddingApiUrl = process.env.TEXT_EMBEDDING_API_ENDPOINT;
-const embeddingApiKey = process.env.TEXT_EMBEDDING_API_KEY;
-
 const embeddings = new AzureOpenAIEmbeddings({
   azureOpenAIApiKey:process.env.TEXT_EMBEDDING_API_KEY , // In Node.js defaults to process.env.AZURE_OPENAI_API_KEY
   azureOpenAIApiInstanceName:process.env.INSTANCE,

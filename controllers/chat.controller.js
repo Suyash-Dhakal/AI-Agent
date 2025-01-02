@@ -1,11 +1,12 @@
 import readline from 'node:readline';
-import getResponse from '../services/openai.service.js';
+import getResponse from '../services/llmResponse.service.js';
 import formatMessage from '../utilities/formatMessage.js';
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
+
 
 const chat = () => {
     const history = [
@@ -41,7 +42,7 @@ const chat = () => {
         });
     };
 
-    // Start the conversation with the first AI message
+    // Start the conversation with the first AI message    
     console.log('Chatbot initialized. Type "exit" to end the chat.');
     console.log('AI: How can I help you today?\n');
     start();
