@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import { CharacterTextSplitter } from 'langchain/text_splitter';
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
-import { AzureOpenAIEmbeddings } from '@langchain/openai'; // Import AzureOpenAIEmbeddings
+import { AzureOpenAIEmbeddings, AzureChatOpenAI } from '@langchain/openai'; // Import AzureOpenAIEmbeddings
 
 const question = process.argv[2] || 'hi';
 
@@ -13,13 +13,26 @@ const embeddings = new AzureOpenAIEmbeddings({
   azureOpenAIApiVersion: process.env.VERSION, // In Node.js defaults to process.env.AZURE_OPENAI_API_VERSION
 });
 
-const createStore = async (docs) => {
+
+//instantiation of our model object
+const llm = new AzureChatOpenAI({
+  model: "gpt-4-32k",
+  temperature: 0,
+  maxTokens: undefined,
+  maxRetries: 2,
+  azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY, // In Node.js defaults to process.env.AZURE_OPENAI_API_KEY
+  azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_API_INSTANCE_NAME, // In Node.js defaults to process.env.AZURE_OPENAI_API_INSTANCE_NAME
+  azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME, // In Node.js defaults to process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME
+  azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION, // In Node.js defaults to process.env.AZURE_OPENAI_API_VERSION
+});
+
+export const createStore = async (docs) => {
   // Create and return the MemoryVectorStore using the embeddings
   return MemoryVectorStore.fromDocuments(docs, embeddings);
 };
 
-const docsFromPDF = async () => {
-  const loader = new PDFLoader('Flutter-Proposal.pdf');
+export const docsFromPDF = async () => {
+  const loader = new PDFLoader('csitWorkshoppdf.pdf');
   const splitter = new CharacterTextSplitter({
     separator: '. ',
     chunkSize: 2500,
@@ -32,17 +45,31 @@ const docsFromPDF = async () => {
   return splitter.splitDocuments(docs);
 };
 
-const loadStore = async () => {
+export const loadStore = async () => {
   const pdfDocs = await docsFromPDF();
   return createStore([...pdfDocs]);  // Pass pdfDocs as an array to createStore
 };
 
 
 
-const query =async()=>{
+export const query =async()=>{
   const store=await loadStore();
-  const results=await store.similaritySearch(question,1);
-  console.log(results);
+  const results=await store.similaritySearch(question,2);
+  const response=await llm.invoke([
+    [
+      "system",
+        "You are a helpful AI assistant. Answser questions to your best ability.",
+    ],
+    [
+      "human",
+      `Answer the following question using the provided context. If you cannot answer the question with the context, don't lie and make up stuff. Just say you need more context.
+      Question:${question}
+      Context:${results.map((r) => r.pageContent).join('\n')}
+      `
+    ],
+  ])
+
+  console.log(`Answer: ${response.content}`);
   
 }
 
